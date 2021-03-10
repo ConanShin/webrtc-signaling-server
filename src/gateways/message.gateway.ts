@@ -18,6 +18,15 @@ export class MessageGateway implements OnGatewayInit, OnGatewayDisconnect {
 
     private logger: Logger = new Logger('MessageGateway')
 
+    @SubscribeMessage('send-candidate')
+    public sendCandidate(client: Socket, data: any): void {
+        client.to(data.to).emit('receive-candidate', {
+            candidate: data.candidate,
+            socket: client.id,
+            name: data.name
+        })
+    }
+
     @SubscribeMessage('joinRoom')
     public joinRoom(client: Socket, info: any): void {
         const existingSocket = this.activeSockets?.find(
